@@ -11,6 +11,7 @@ class Login extends React.Component {
     email: '',
     isBtnPlayDisabled: true,
     redirectToGame: false,
+    redirectToSettings: false,
   };
 
   handleChange = ({ target }) => {
@@ -40,11 +41,23 @@ class Login extends React.Component {
     this.setState({ redirectToGame: true });
   };
 
+  clickButtonSettings = () => {
+    this.setState({ redirectToSettings: true });
+  }
+
   render() {
-    const { isBtnPlayDisabled, name, email, redirectToGame } = this.state;
+    const { isBtnPlayDisabled,
+      name,
+      email,
+      redirectToGame,
+      redirectToSettings } = this.state;
 
     if (redirectToGame) {
       return <Redirect to="/play" />;
+    }
+
+    if (redirectToSettings) {
+      return <Redirect to="/settings" />;
     }
 
     return (
@@ -60,7 +73,6 @@ class Login extends React.Component {
             onChange={ this.handleChange }
           />
         </label>
-
         <label htmlFor="player-email">
           E-mail:
           <input
@@ -72,13 +84,18 @@ class Login extends React.Component {
             onChange={ this.handleChange }
           />
         </label>
-
         <input
           data-testid="btn-play"
           type="submit"
           value="Play"
           disabled={ isBtnPlayDisabled }
           onClick={ this.clickButtonPlay }
+        />
+        <input
+          data-testid="btn-settings"
+          type="submit"
+          value="Settings"
+          onClick={ this.clickButtonSettings }
         />
       </form>
     );
