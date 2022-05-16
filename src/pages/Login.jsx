@@ -1,10 +1,16 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
+import PropTypes from 'prop-types';
+import addPlayer from '../redux/actions/player';
+import fetchToken from '../redux/actions/token';
 
 class Login extends React.Component {
   state = {
     name: '',
     email: '',
     isBtnPlayDisabled: true,
+    redirectToGame: false,
   };
 
   handleChange = ({ target }) => {
@@ -22,8 +28,25 @@ class Login extends React.Component {
     }
   };
 
+  clickButtonPlay = async (event) => {
+    event.preventDefault();
+    const { addPlayerDispatch, tokenDispatch } = this.props;
+
+    const { name, email } = this.state;
+    addPlayerDispatch(name, email);
+
+    tokenDispatch();
+
+    this.setState({ redirectToGame: true });
+  };
+
   render() {
-    const { isBtnPlayDisabled, name, email } = this.state;
+    const { isBtnPlayDisabled, name, email, redirectToGame } = this.state;
+
+    if (redirectToGame) {
+      return <Redirect to="/play" />;
+    }
+
     return (
       <form>
         <label htmlFor="player-name">
@@ -37,6 +60,7 @@ class Login extends React.Component {
             onChange={ this.handleChange }
           />
         </label>
+
         <label htmlFor="player-email">
           E-mail:
           <input
@@ -48,15 +72,27 @@ class Login extends React.Component {
             onChange={ this.handleChange }
           />
         </label>
+
         <input
           data-testid="btn-play"
           type="submit"
           value="Play"
           disabled={ isBtnPlayDisabled }
+          onClick={ this.clickButtonPlay }
         />
       </form>
     );
   }
 }
 
-export default Login;
+const mapDispatchToProps = (dispatch) => ({
+  tokenDispatch: () => dispatch(fetchToken()),
+  addPlayerDispatch: (name, email) => dispatch(addPlayer(name, email)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
+
+Login.propTypes = {
+  tokenDispatch: PropTypes.func.isRequired,
+  addPlayerDispatch: PropTypes.func.isRequired,
+};
