@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 import PropTypes from 'prop-types';
 import addPlayer from '../redux/actions/player';
 import fetchToken from '../redux/actions/token';
+import addScore from '../redux/actions/score';
 
 class Login extends React.Component {
   state = {
@@ -31,13 +32,13 @@ class Login extends React.Component {
 
   clickButtonPlay = async (event) => {
     event.preventDefault();
-    const { addPlayerDispatch, tokenDispatch } = this.props;
+    const { addPlayerDispatch, tokenDispatch, resetPlayerScore } = this.props;
 
     const { name, email } = this.state;
     addPlayerDispatch(name, email);
 
     await tokenDispatch();
-
+    resetPlayerScore();
     this.setState({ redirectToGame: true });
   };
 
@@ -105,6 +106,7 @@ class Login extends React.Component {
 const mapDispatchToProps = (dispatch) => ({
   tokenDispatch: () => dispatch(fetchToken()),
   addPlayerDispatch: (name, email) => dispatch(addPlayer(name, email)),
+  resetPlayerScore: () => dispatch(addScore(0, 0)),
 });
 
 export default connect(null, mapDispatchToProps)(Login);
@@ -112,4 +114,5 @@ export default connect(null, mapDispatchToProps)(Login);
 Login.propTypes = {
   tokenDispatch: PropTypes.func.isRequired,
   addPlayerDispatch: PropTypes.func.isRequired,
+  resetPlayerScore: PropTypes.func.isRequired,
 };
