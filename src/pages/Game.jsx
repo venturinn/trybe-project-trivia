@@ -13,6 +13,7 @@ let timeout = '';
 class Game extends React.Component {
     state = {
       redirectToLogin: false,
+      redirectToFeedback: false,
       questionIndex: 0,
       timer: 30,
       isDisabledAlternatives: false,
@@ -28,10 +29,10 @@ class Game extends React.Component {
       const token = localStorage.getItem('token');
       await triviaDispatch(token);
       this.isTokenValid();
-      this.timer();
+      this.startTime();
     }
 
-    timer = () => {
+    startTime = () => {
       this.setState({ isDisabledAlternatives: false });
       const timeTimeout = 30000;
       const timeInterval = 1000;
@@ -61,6 +62,7 @@ class Game extends React.Component {
     }
 
     onClickAltenatives = ({ target }) => {
+      this.endTime();
       const { questionIndex, timer } = this.state;
       this.setState(
         { styleTrue: { border: '3px solid rgb(6, 240, 15)' },
@@ -98,16 +100,27 @@ class Game extends React.Component {
 
     clickNext = () => {
       this.endTime();
-      this.timer();
+
+      const { questionIndex } = this.state;
+      const maxQuestionsIndex = 4;
+
+      if (questionIndex === maxQuestionsIndex) {
+        this.setState({ redirectToFeedback: true });
+      }
+
       this.setState((previous) => ({
         questionIndex: previous.questionIndex + 1,
         timer: 30,
         isVisibleButtonNext: false,
       }));
+
+      this.startTime();
     }
 
     render() {
-      const { redirectToLogin,
+      const {
+        redirectToLogin,
+        redirectToFeedback,
         questionIndex,
         timer,
         isDisabledAlternatives,
@@ -120,6 +133,11 @@ class Game extends React.Component {
       if (redirectToLogin) {
         return <Redirect to="/" />;
       }
+
+      if (redirectToFeedback) {
+        return <Redirect to="/feedback" />;
+      }
+
       return (
         <div>
           <Header />
