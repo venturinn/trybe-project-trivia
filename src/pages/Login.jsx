@@ -36,7 +36,7 @@ class Login extends React.Component {
     const { name, email } = this.state;
     addPlayerDispatch(name, email);
 
-    tokenDispatch();
+    await tokenDispatch();
 
     this.setState({ redirectToGame: true });
   };

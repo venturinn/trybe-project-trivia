@@ -12,10 +12,10 @@ class Game extends React.Component {
       questionIndex: 0,
     }
 
-    componentDidMount() {
+    async componentDidMount() {
       const { triviaDispatch } = this.props;
-      const token = localStorage.getItem('token');
-      triviaDispatch(token);
+      const token = JSON.parse(localStorage.getItem('token'));
+      await triviaDispatch(token);
     }
 
   isTokenValid = (triviaResponseCode) => {
