@@ -7,15 +7,20 @@ import Header from '../components/Header';
 class Feedback extends React.Component {
     state = {
       redirectToLogin: false,
+      redirectToRanking: false,
     }
 
     render() {
       const { assertions, score } = this.props;
-      const { redirectToLogin } = this.state;
+      const { redirectToLogin, redirectToRanking } = this.state;
       const minAssertions = 3;
 
       if (redirectToLogin) {
         return <Redirect to="/" />;
+      }
+
+      if (redirectToRanking) {
+        return <Redirect to="/ranking" />;
       }
 
       return (
@@ -38,6 +43,13 @@ class Feedback extends React.Component {
             onClick={ () => { this.setState({ redirectToLogin: true }); } }
           >
             Play Again
+          </button>
+          <button
+            type="button"
+            data-testid="btn-ranking"
+            onClick={ () => { this.setState({ redirectToRanking: true }); } }
+          >
+            Go to Ranking
           </button>
         </div>
       );
