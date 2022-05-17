@@ -16,6 +16,7 @@ class Game extends React.Component {
       questionIndex: 0,
       timer: 30,
       isDisabledAlternatives: false,
+      isVisibleButtonNext: false,
       styleTrue: {},
       styleFalse: {},
       score: 0,
@@ -45,7 +46,7 @@ class Game extends React.Component {
     }
 
     endTime = () => {
-      this.setState({ isDisabledAlternatives: true });
+      this.setState({ isDisabledAlternatives: true, isVisibleButtonNext: true });
       clearInterval(interval);
       clearTimeout(timeout);
     };
@@ -63,7 +64,10 @@ class Game extends React.Component {
       const { questionIndex, timer } = this.state;
       this.setState(
         { styleTrue: { border: '3px solid rgb(6, 240, 15)' },
-          styleFalse: { border: '3px solid rgb(255, 0, 0)' } },
+          styleFalse: { border: '3px solid rgb(255, 0, 0)' },
+          isVisibleButtonNext: true,
+          isDisabledAlternatives: true,
+        },
       );
 
       if (target.name === 'correct') {
@@ -92,6 +96,16 @@ class Game extends React.Component {
       }
     };
 
+    clickNext = () => {
+      this.endTime();
+      this.timer();
+      this.setState((previous) => ({
+        questionIndex: previous.questionIndex + 1,
+        timer: 30,
+        isVisibleButtonNext: false,
+      }));
+    }
+
     render() {
       const { redirectToLogin,
         questionIndex,
@@ -99,6 +113,7 @@ class Game extends React.Component {
         isDisabledAlternatives,
         styleTrue,
         styleFalse,
+        isVisibleButtonNext,
       } = this.state;
       const { triviaResults } = this.props;
 
@@ -115,6 +130,11 @@ class Game extends React.Component {
             styleFalse={ styleFalse }
             onClickAltenatives={ this.onClickAltenatives }
           />
+          {isVisibleButtonNext && (
+            <button onClick={ this.clickNext } data-testid="btn-next" type="button">
+              Next
+            </button>
+          )}
           <p>{ timer }</p>
         </div>
       );
