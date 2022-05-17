@@ -105,6 +105,15 @@ class Game extends React.Component {
       const maxQuestionsIndex = 4;
 
       if (questionIndex === maxQuestionsIndex) {
+        const { name, picture, score } = this.props;
+        const newRankingElement = { name, picture, score };
+        const ranking = JSON.parse(localStorage.getItem('ranking'));
+        if (ranking === null) {
+          localStorage.setItem('ranking', JSON.stringify([newRankingElement]));
+        } else {
+          ranking.push(newRankingElement);
+          localStorage.setItem('ranking', JSON.stringify(ranking));
+        }
         this.setState({ redirectToFeedback: true });
       }
 
@@ -167,6 +176,9 @@ const mapDispatchToProps = (dispatch) => ({
 const mapStateToProps = (state) => ({
   triviaResults: state.trivia.results,
   triviaResponseCode: state.trivia.responseCode,
+  name: state.player.name,
+  picture: state.player.gravatarUrl,
+  score: state.player.score,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
@@ -176,4 +188,7 @@ Game.propTypes = {
   triviaResponseCode: PropTypes.number.isRequired,
   triviaResults: PropTypes.objectOf.isRequired,
   addPlayerScore: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  picture: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
 };
