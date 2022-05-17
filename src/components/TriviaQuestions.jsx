@@ -2,13 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class TriviaQuestions extends React.Component {
+  state = {
+    styleTrue: {},
+    styleFalse: {},
+  }
+
+  onClickAltenatives = () => {
+    this.setState(
+      { styleTrue: { border: '3px solid rgb(6, 240, 15)' },
+        styleFalse: { border: '3px solid rgb(255, 0, 0)' } },
+    );
+  };
+
   shuffleAlternatives = (alternatives) => alternatives.sort(() => {
     const number = 0.5;
     return number - Math.random();
   });
 
-  randomAlternatives = () => {
+  mountAlternatives = () => {
     const { question } = this.props;
+    const { styleTrue, styleFalse } = this.state;
 
     const trueAlternative = question.correct_answer;
     const falseAlternatives = question.incorrect_answers;
@@ -28,6 +41,8 @@ class TriviaQuestions extends React.Component {
                 key={ index }
                 type="button"
                 id="0"
+                style={ styleTrue }
+                onClick={ this.onClickAltenatives }
                 data-testid="correct-answer"
               >
                 {alternative.alternative}
@@ -37,6 +52,8 @@ class TriviaQuestions extends React.Component {
           return (
             <button
               key={ index }
+              style={ styleFalse }
+              onClick={ this.onClickAltenatives }
               type="button"
               id={ index + 1 }
               data-testid={ `wrong-answer-${index}` }
@@ -58,7 +75,7 @@ class TriviaQuestions extends React.Component {
           <section>
             <p data-testid="question-category">{question.category}</p>
             <p data-testid="question-text">{question.question}</p>
-            {this.randomAlternatives()}
+            {this.mountAlternatives()}
           </section>
         )}
       </div>
