@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import fetchTrivia from '../redux/actions/trivia';
 import TriviaQuestions from '../components/TriviaQuestions';
+import addScore from '../redux/actions/score';
 
 let interval = '';
 let timeout = '';
@@ -15,11 +16,15 @@ class Game extends React.Component {
       questionIndex: 0,
       timer: 30,
       isDisabledAlternatives: false,
+      styleTrue: {},
+      styleFalse: {},
+      score: 0,
+      assertions: 0,
     }
 
     async componentDidMount() {
       const { triviaDispatch } = this.props;
-      const token = JSON.parse(localStorage.getItem('token'));
+      const token = localStorage.getItem('token');
       await triviaDispatch(token);
       this.timer();
     }
@@ -52,11 +57,46 @@ class Game extends React.Component {
       }
     }
 
+    onClickAltenatives = ({ target }) => {
+      const { questionIndex, timer } = this.state;
+      this.setState(
+        { styleTrue: { border: '3px solid rgb(6, 240, 15)' },
+          styleFalse: { border: '3px solid rgb(255, 0, 0)' } },
+      );
+
+      if (target.name === 'correct') {
+        const { addPlayerScore, triviaResults } = this.props;
+        const { difficulty } = triviaResults[questionIndex];
+        const scoreToAllQuestions = 10;
+        const hardNumer = 3;
+        const mediumNumber = 2;
+        let difficultyNumer = 1;
+
+        if (difficulty === 'medium') {
+          difficultyNumer = mediumNumber;
+        } else if (difficulty === 'hard') {
+          difficultyNumer = hardNumer;
+        }
+
+        const saveScoreGlobalState = () => {
+          const { score, assertions } = this.state;
+          addPlayerScore(score, assertions);
+        };
+
+        this.setState((previous) => ({
+          score: previous.score + (scoreToAllQuestions + (timer * difficultyNumer)),
+          assertions: previous.assertions + 1,
+        }), saveScoreGlobalState);
+      }
+    };
+
     render() {
       const { redirectToLogin,
         questionIndex,
         timer,
         isDisabledAlternatives,
+        styleTrue,
+        styleFalse,
       } = this.state;
       const { triviaResults, triviaResponseCode } = this.props;
 
@@ -71,6 +111,9 @@ class Game extends React.Component {
           <TriviaQuestions
             question={ triviaResults[questionIndex] }
             isDisabledAlternatives={ isDisabledAlternatives }
+            styleTrue={ styleTrue }
+            styleFalse={ styleFalse }
+            onClickAltenatives={ this.onClickAltenatives }
           />
           <p>{ timer }</p>
         </div>
@@ -80,6 +123,7 @@ class Game extends React.Component {
 
 const mapDispatchToProps = (dispatch) => ({
   triviaDispatch: (token) => dispatch(fetchTrivia(token)),
+  addPlayerScore: (score, assertions) => dispatch(addScore(score, assertions)),
 });
 
 const mapStateToProps = (state) => ({
@@ -91,6 +135,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Game);
 
 Game.propTypes = {
   triviaDispatch: PropTypes.func.isRequired,
-  triviaResponseCode: PropTypes.string.isRequired,
+  triviaResponseCode: PropTypes.number.isRequired,
   triviaResults: PropTypes.objectOf.isRequired,
+  addPlayerScore: PropTypes.func.isRequired,
 };

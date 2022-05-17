@@ -9,7 +9,7 @@ const token = (state = INITIAL_STATE, action) => {
       ...state,
     };
   case GET_TOKEN_SUCCESS:
-    localStorage.setItem('token', JSON.stringify(action.payload));
+    localStorage.setItem('token', action.payload);
     return action.payload;
 
   case GET_TOKEN_ERROR:
