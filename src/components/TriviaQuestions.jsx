@@ -20,7 +20,7 @@ class TriviaQuestions extends React.Component {
   });
 
   mountAlternatives = () => {
-    const { question } = this.props;
+    const { question, isDisabledAlternatives } = this.props;
     const { styleTrue, styleFalse } = this.state;
 
     const trueAlternative = question.correct_answer;
@@ -44,6 +44,7 @@ class TriviaQuestions extends React.Component {
                 style={ styleTrue }
                 onClick={ this.onClickAltenatives }
                 data-testid="correct-answer"
+                disabled={ isDisabledAlternatives }
               >
                 {alternative.alternative}
               </button>
@@ -57,6 +58,7 @@ class TriviaQuestions extends React.Component {
               type="button"
               id={ index + 1 }
               data-testid={ `wrong-answer-${index}` }
+              disabled={ isDisabledAlternatives }
             >
               {alternative.alternative}
             </button>
@@ -87,6 +89,7 @@ export default TriviaQuestions;
 
 TriviaQuestions.propTypes = {
   question: PropTypes.objectOf,
+  isDisabledAlternatives: PropTypes.bool.isRequired,
 };
 
 TriviaQuestions.defaultProps = {
