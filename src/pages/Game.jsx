@@ -26,6 +26,7 @@ class Game extends React.Component {
       const { triviaDispatch } = this.props;
       const token = localStorage.getItem('token');
       await triviaDispatch(token);
+      this.isTokenValid();
       this.timer();
     }
 
@@ -49,7 +50,8 @@ class Game extends React.Component {
       clearTimeout(timeout);
     };
 
-    isTokenValid = (triviaResponseCode) => {
+    isTokenValid = () => {
+      const { triviaResponseCode } = this.props;
       const tokenExpireCode = 3;
       if (triviaResponseCode === tokenExpireCode) {
         localStorage.clear();
@@ -98,9 +100,7 @@ class Game extends React.Component {
         styleTrue,
         styleFalse,
       } = this.state;
-      const { triviaResults, triviaResponseCode } = this.props;
-
-      this.isTokenValid(triviaResponseCode);
+      const { triviaResults } = this.props;
 
       if (redirectToLogin) {
         return <Redirect to="/" />;
