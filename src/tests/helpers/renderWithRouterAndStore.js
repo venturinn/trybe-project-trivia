@@ -8,7 +8,7 @@ import { render } from '@testing-library/react';
 import reducer from '../../redux/reducers';
 
 
-// Funções getStore e renderWithRouterAndStore adaptadas a partir de uma outra solução desenvolvida pela Trybe
+// Funções getStore e renderWithRouterAndStore adaptadas a partir de uma solução desenvolvida pela Trybe
 const getStore = (initialState) => {
   if (!initialState) return createStore(reducer, applyMiddleware(thunk));
   return createStore(reducer, initialState, applyMiddleware(thunk));

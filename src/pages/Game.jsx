@@ -36,6 +36,7 @@ class Game extends React.Component {
       this.setState({ isDisabledAlternatives: false });
       const timeTimeout = 30000;
       const timeInterval = 1000;
+
       interval = setInterval(
         () => {
           this.setState(
@@ -121,6 +122,8 @@ class Game extends React.Component {
         questionIndex: previous.questionIndex + 1,
         timer: 30,
         isVisibleButtonNext: false,
+        styleTrue: {},
+        styleFalse: {},
       }));
 
       this.startTime();
@@ -162,7 +165,7 @@ class Game extends React.Component {
               Next
             </button>
           )}
-          <p>{ timer }</p>
+          <p data-testid="timer">{ timer }</p>
         </div>
       );
     }
