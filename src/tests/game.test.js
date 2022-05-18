@@ -11,6 +11,11 @@ const {
   expiredQuestionsResponse,
 } = require("./mocks/questions");
 
+const {
+  localStorageRankingWithTwoResults,
+  localStorageRankingWithOneResult,
+} = require("./mocks/localStorage");
+
 const { playerState } = require("./mocks/player");
 
 const mockTriviaApiWithValidToken = () => {
@@ -30,8 +35,6 @@ const mockTriviaApiWithInvalidToken = () => {
 const EMAIL_INPUT_TEST_ID = "input-gravatar-email";
 const NAME_INPUT_TEST_ID = "input-player-name";
 const BUTTON_PLAY_TEST_ID = "btn-play";
-const BUTTON_SETTINGS_TEST_ID = "btn-settings";
-const SETTINGS_TITLE_TEST_ID = "settings-title";
 
 const HEADER_PICTURE = "header-profile-picture";
 const GRAVATAR_HASH = "0cf15665a9146ba852bf042b0652780a";
@@ -48,27 +51,6 @@ const TIMER = "timer";
 
 const VALID_EMAIL = "tomster@emberjs.com";
 const VALID_NAME = "Diego Venturin - Turma XP - Tribo A";
-
-const localStorageRanking = [
-  {
-    name: "Diego Venturin - Turma XP - Tribo A",
-    picture: "https://www.gravatar.com/avatar/0cf15665a9146ba852bf042b0652780a",
-    score: 350,
-  },
-];
-
-const localStorageRankingWithTwoResults = [
-  {
-    name: "Diego Venturin - Turma XP - Tribo A",
-    picture: "https://www.gravatar.com/avatar/0cf15665a9146ba852bf042b0652780a",
-    score: 350,
-  },
-  {
-    name: "Diego Venturin - Turma XP - Tribo A",
-    picture: "https://www.gravatar.com/avatar/0cf15665a9146ba852bf042b0652780a",
-    score: 350,
-  },
-];
 
 describe("Testa a página <Game.js />.", () => {
   test("Após 30 segundos, o botão Next deve ser renderizado e as alternativas desabilitadas", async () => {
@@ -206,7 +188,7 @@ describe("Testa a página <Game.js />.", () => {
     await waitFor(() => expect(history.location.pathname).toBe("/feedback"));
 
     const rankingLocalStorage = JSON.parse(localStorage.getItem("ranking"));
-    expect(rankingLocalStorage).toStrictEqual(localStorageRanking);
+    expect(rankingLocalStorage).toStrictEqual(localStorageRankingWithOneResult);
 
     await waitFor(() =>
       expect(store.getState().player.score).toStrictEqual(350)
@@ -233,7 +215,10 @@ describe("Testa a página <Game.js />.", () => {
   });
 
   test("Os resultados deve ser armazenado no localStorage de forma cumulativa", async () => {
-    localStorage.setItem("ranking", JSON.stringify(localStorageRanking));
+    localStorage.setItem(
+      "ranking",
+      JSON.stringify(localStorageRankingWithOneResult)
+    );
 
     mockTriviaApiWithValidToken();
     const { history } = renderWithRouterAndStore(

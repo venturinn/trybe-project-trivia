@@ -1,4 +1,4 @@
-// Objetos reaproveitados do avaliador da Trybe:
+// Objeto reaproveitado do avaliador da Trybe:
 
 const questionsResponse = {
   response_code: 0,
